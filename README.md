@@ -1,4 +1,4 @@
-# Iterative Rotation Cypher
+# Iterative Rotation Cipher
 
 In this kata, your task is to implement what I call Iterative Rotation Cipher
 (IRC). To complete the task, you will create a module with two functions:

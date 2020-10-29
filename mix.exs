@@ -1,9 +1,9 @@
-defmodule IterativeRotationCypher.MixProject do
+defmodule IterativeRotationCipher.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :iterative_rotation_cypher,
+      app: :iterative_rotation_cipher,
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
