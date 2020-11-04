@@ -7,9 +7,38 @@ defmodule IterativeRotationCipherTest do
       plain = "If you wish to make an apple pie from scratch, you must first invent the universe."
 
       cipher =
-        "10 hu fmo a,ys vi utie mr snehn rni tvte .ysushou teI fwea pmapi apfrok rei tnocscle"
+        "10 hu fmo a,ys vi utie mr snehn rni tvte .ysushou teI fwea pmapi apfrok rei tnocsclet"
 
       assert IterativeRotationCipher.encode(10, plain) == cipher
+    end
+  end
+
+  describe "IterativeRotationCipher.shift_right_preserving_spaces/2" do
+    test "shifts characters the specified number of positions to the right, leaving spaces in place" do
+      assert IterativeRotationCipher.shift_right_preserving_spaces("foo   bar", 4) ==
+               "oba   rfo"
+    end
+
+    test "cycles repeatedly if n is larger than the length of the de-spaced string" do
+      assert IterativeRotationCipher.shift_right_preserving_spaces("foo   bar", 10) ==
+               "oba   rfo"
+    end
+
+    test "leaves leading and trailing spaces untouched" do
+      assert IterativeRotationCipher.shift_right_preserving_spaces(" foo   bar  ", 4) ==
+               " oba   rfo  "
+    end
+  end
+
+  describe "IterativeRotationCipher.shift_character_groups_right/2" do
+    test "shifts characters within each space-separated group, leaving spaces in place" do
+      assert IterativeRotationCipher.shift_character_groups_right(" fo   bar bazzzz  ", 2) ==
+               " fo   arb zzbazz  "
+    end
+
+    test "cycles repeatedly if n is larger than the length of the group" do
+      assert IterativeRotationCipher.shift_character_groups_right("foobar baz", 10) ==
+               "obarfo zba"
     end
   end
 end
