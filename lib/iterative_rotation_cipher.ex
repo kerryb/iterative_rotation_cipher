@@ -1,16 +1,31 @@
 defmodule IterativeRotationCipher do
   def encode(n, text) do
-    "#{n} #{shift_n_times(text, n)}"
+    "#{n} #{shift_right_n_times(text, n)}"
   end
 
-  defp shift_n_times(text, n) do
-    Enum.reduce(1..n, text, fn _, text -> shift(text, n) end)
+  def decode(text) do
+    [n, cipher] = String.split(text, " ", parts: 2)
+    shift_left_n_times(cipher, String.to_integer(n))
   end
 
-  defp shift(text, n) do
+  defp shift_right_n_times(text, n) do
+    Enum.reduce(1..n, text, fn _, text -> shift_right(text, n) end)
+  end
+
+  defp shift_right(text, n) do
     text
     |> shift_right_preserving_spaces(n)
     |> shift_character_groups_right(n)
+  end
+
+  defp shift_left_n_times(text, n) do
+    Enum.reduce(1..n, text, fn _, text -> shift_left(text, n) end)
+  end
+
+  defp shift_left(text, n) do
+    text
+    |> shift_character_groups_left(n)
+    |> shift_left_preserving_spaces(n)
   end
 
   def shift_right_preserving_spaces(text, n) do
@@ -28,6 +43,22 @@ defmodule IterativeRotationCipher do
   defp rotate_right(chars, n) do
     chars
     |> Enum.split(-Integer.mod(n, length(chars)))
+    |> (fn {left, right} -> right ++ left end).()
+  end
+
+  def shift_left_preserving_spaces(text, n) do
+    chars = String.codepoints(text)
+
+    chars
+    |> remove_spaces()
+    |> rotate_left(n)
+    |> replace_spaces(chars)
+    |> to_string()
+  end
+
+  defp rotate_left(chars, n) do
+    chars
+    |> Enum.split(Integer.mod(n, length(chars)))
     |> (fn {left, right} -> right ++ left end).()
   end
 
@@ -51,6 +82,19 @@ defmodule IterativeRotationCipher do
   defp rotate_group_right(text, n) do
     text
     |> String.split_at(-Integer.mod(n, String.length(text)))
+    |> (fn {left, right} -> right <> left end).()
+  end
+
+  def shift_character_groups_left(text, n) do
+    text
+    |> String.split(~r/ +/, trim: true, include_captures: true)
+    |> Enum.map(&rotate_group_left(&1, n))
+    |> Enum.join()
+  end
+
+  defp rotate_group_left(text, n) do
+    text
+    |> String.split_at(Integer.mod(n, String.length(text)))
     |> (fn {left, right} -> right <> left end).()
   end
 end
