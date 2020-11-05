@@ -1,25 +1,21 @@
 defmodule IterativeRotationCipher do
   def encode(n, text) do
-    "#{n} #{shift_right_n_times(text, n)}"
+    "#{n} #{n_times(text, &shift_right/2, n)}"
   end
 
   def decode(text) do
     [n, cipher] = String.split(text, " ", parts: 2)
-    shift_left_n_times(cipher, String.to_integer(n))
+    n_times(cipher, &shift_left/2, String.to_integer(n))
   end
 
-  defp shift_right_n_times(text, n) do
-    Enum.reduce(1..n, text, fn _, text -> shift_right(text, n) end)
+  defp n_times(text, fun, n) do
+    Enum.reduce(1..n, text, fn _, text -> fun.(text, n) end)
   end
 
   defp shift_right(text, n) do
     text
     |> shift_right_preserving_spaces(n)
     |> shift_character_groups_right(n)
-  end
-
-  defp shift_left_n_times(text, n) do
-    Enum.reduce(1..n, text, fn _, text -> shift_left(text, n) end)
   end
 
   defp shift_left(text, n) do
