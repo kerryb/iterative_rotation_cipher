@@ -24,19 +24,24 @@ defmodule IterativeRotationCipherTest do
     end
   end
 
-  describe "IterativeRotationCipher.shift_right_preserving_spaces/2" do
+  describe "IterativeRotationCipher.shift_preserving_spaces/3" do
     test "shifts characters the specified number of positions to the right, leaving spaces in place" do
-      assert IterativeRotationCipher.shift_right_preserving_spaces("foo   bar", 4) ==
+      assert IterativeRotationCipher.shift_preserving_spaces("foo   bar", 4, :right) ==
                "oba   rfo"
     end
 
+    test "shifts characters the specified number of positions to the left, leaving spaces in place" do
+      assert IterativeRotationCipher.shift_preserving_spaces("oba   rfo", 4, :left) ==
+               "foo   bar"
+    end
+
     test "cycles repeatedly if n is larger than the length of the de-spaced string" do
-      assert IterativeRotationCipher.shift_right_preserving_spaces("foo   bar", 10) ==
+      assert IterativeRotationCipher.shift_preserving_spaces("foo   bar", 10, :right) ==
                "oba   rfo"
     end
 
     test "leaves leading and trailing spaces untouched" do
-      assert IterativeRotationCipher.shift_right_preserving_spaces(" foo   bar  ", 4) ==
+      assert IterativeRotationCipher.shift_preserving_spaces(" foo   bar  ", 4, :right) ==
                " oba   rfo  "
     end
   end
@@ -50,23 +55,6 @@ defmodule IterativeRotationCipherTest do
     test "cycles repeatedly if n is larger than the length of the group" do
       assert IterativeRotationCipher.shift_character_groups_right("foobar baz", 10) ==
                "obarfo zba"
-    end
-  end
-
-  describe "IterativeRotationCipher.shift_left_preserving_spaces/2" do
-    test "shifts characters the specified number of positions to the left, leaving spaces in place" do
-      assert IterativeRotationCipher.shift_left_preserving_spaces("oba   rfo", 4) ==
-               "foo   bar"
-    end
-
-    test "cycles repeatedly if n is larger than the length of the de-spaced string" do
-      assert IterativeRotationCipher.shift_left_preserving_spaces("oba   rfo", 10) ==
-               "foo   bar"
-    end
-
-    test "leaves leading and trailing spaces untouched" do
-      assert IterativeRotationCipher.shift_left_preserving_spaces(" oba   rfo  ", 4) ==
-               " foo   bar  "
     end
   end
 

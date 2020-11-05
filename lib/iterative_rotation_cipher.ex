@@ -14,32 +14,22 @@ defmodule IterativeRotationCipher do
 
   defp shift_right(text, n) do
     text
-    |> shift_right_preserving_spaces(n)
+    |> shift_preserving_spaces(n, :right)
     |> shift_character_groups_right(n)
   end
 
   defp shift_left(text, n) do
     text
     |> shift_character_groups_left(n)
-    |> shift_left_preserving_spaces(n)
+    |> shift_preserving_spaces(n, :left)
   end
 
-  def shift_right_preserving_spaces(text, n) do
+  def shift_preserving_spaces(text, n, direction) do
     chars = String.codepoints(text)
 
     chars
     |> remove_spaces()
-    |> rotate(n, :right)
-    |> replace_spaces(chars)
-    |> to_string()
-  end
-
-  def shift_left_preserving_spaces(text, n) do
-    chars = String.codepoints(text)
-
-    chars
-    |> remove_spaces()
-    |> rotate(n, :left)
+    |> rotate(n, direction)
     |> replace_spaces(chars)
     |> to_string()
   end
