@@ -29,17 +29,9 @@ defmodule IterativeRotationCipher do
 
     chars
     |> remove_spaces()
-    |> rotate_right(n)
+    |> rotate(n, :right)
     |> replace_spaces(chars)
     |> to_string()
-  end
-
-  defp remove_spaces(chars), do: Enum.reject(chars, &(&1 == " "))
-
-  defp rotate_right(chars, n) do
-    chars
-    |> Enum.split(-Integer.mod(n, length(chars)))
-    |> (fn {left, right} -> right ++ left end).()
   end
 
   def shift_left_preserving_spaces(text, n) do
@@ -47,14 +39,19 @@ defmodule IterativeRotationCipher do
 
     chars
     |> remove_spaces()
-    |> rotate_left(n)
+    |> rotate(n, :left)
     |> replace_spaces(chars)
     |> to_string()
   end
 
-  defp rotate_left(chars, n) do
+  defp remove_spaces(chars), do: Enum.reject(chars, &(&1 == " "))
+
+  defp rotate(chars, n, :right), do: fold_at(chars, -Integer.mod(n, length(chars)))
+  defp rotate(chars, n, :left), do: fold_at(chars, Integer.mod(n, length(chars)))
+
+  defp fold_at(chars, n) do
     chars
-    |> Enum.split(Integer.mod(n, length(chars)))
+    |> Enum.split(n)
     |> (fn {left, right} -> right ++ left end).()
   end
 
