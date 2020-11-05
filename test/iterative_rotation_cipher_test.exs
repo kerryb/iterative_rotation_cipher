@@ -46,27 +46,21 @@ defmodule IterativeRotationCipherTest do
     end
   end
 
-  describe "IterativeRotationCipher.shift_character_groups_right/2" do
-    test "shifts characters within each space-separated group, leaving spaces in place" do
-      assert IterativeRotationCipher.shift_character_groups_right(" fo   bar bazzzz  ", 2) ==
+  describe "IterativeRotationCipher.shift_character_groups/3" do
+    test "shifts characters within each space-separated group right, leaving spaces in place" do
+      assert IterativeRotationCipher.shift_character_groups(" fo   bar bazzzz  ", 2, :right)
+             ==
                " fo   arb zzbazz  "
     end
 
-    test "cycles repeatedly if n is larger than the length of the group" do
-      assert IterativeRotationCipher.shift_character_groups_right("foobar baz", 10) ==
-               "obarfo zba"
-    end
-  end
-
-  describe "IterativeRotationCipher.shift_character_groups_left/2" do
-    test "shifts characters within each space-separated group, leaving spaces in place" do
-      assert IterativeRotationCipher.shift_character_groups_left(" fo   arb zzbazz  ", 2) ==
+    test "shifts characters within each space-separated group left, leaving spaces in place" do
+      assert IterativeRotationCipher.shift_character_groups(" fo   arb zzbazz  ", 2, :left) ==
                " fo   bar bazzzz  "
     end
 
     test "cycles repeatedly if n is larger than the length of the group" do
-      assert IterativeRotationCipher.shift_character_groups_left("obarfo zba", 10) ==
-               "foobar baz"
+      assert IterativeRotationCipher.shift_character_groups("foobar baz", 10, :right) ==
+               "obarfo zba"
     end
   end
 end

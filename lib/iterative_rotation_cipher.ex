@@ -15,12 +15,12 @@ defmodule IterativeRotationCipher do
   defp shift_right(text, n) do
     text
     |> shift_preserving_spaces(n, :right)
-    |> shift_character_groups_right(n)
+    |> shift_character_groups(n, :right)
   end
 
   defp shift_left(text, n) do
     text
-    |> shift_character_groups_left(n)
+    |> shift_character_groups(n, :left)
     |> shift_preserving_spaces(n, :left)
   end
 
@@ -55,29 +55,24 @@ defmodule IterativeRotationCipher do
     [head | replace_spaces(tail, original_tail)]
   end
 
-  def shift_character_groups_right(text, n) do
+  def shift_character_groups(text, n, direction) do
     text
     |> String.split(~r/ +/, trim: true, include_captures: true)
-    |> Enum.map(&rotate_group_right(&1, n))
+    |> Enum.map(&rotate_group(&1, n, direction))
     |> Enum.join()
   end
 
-  defp rotate_group_right(text, n) do
-    text
-    |> String.split_at(-Integer.mod(n, String.length(text)))
-    |> (fn {left, right} -> right <> left end).()
+  defp rotate_group(text, n, :right) do
+    fold_group_at(text, -Integer.mod(n, String.length(text)))
   end
 
-  def shift_character_groups_left(text, n) do
-    text
-    |> String.split(~r/ +/, trim: true, include_captures: true)
-    |> Enum.map(&rotate_group_left(&1, n))
-    |> Enum.join()
+  defp rotate_group(text, n, :left) do
+    fold_group_at(text, Integer.mod(n, String.length(text)))
   end
 
-  defp rotate_group_left(text, n) do
+  defp fold_group_at(text, n) do
     text
-    |> String.split_at(Integer.mod(n, String.length(text)))
+    |> String.split_at(n)
     |> (fn {left, right} -> right <> left end).()
   end
 end
